@@ -12,11 +12,15 @@ import {
 import {parseDays, parseHours, parseMinutes} from './parse.js';
 
 const timer = () => {
+  // Время окончания акции по локальному времени
   const deadline = new Date(heroTimer.dataset.timerDeadline).getTime();
+  // Корректируем время окончания акции UTC+3
+  const deadlineCorrectly = deadline +
+    (new Date().getTimezoneOffset() * 60 * 1000) + (3 * 3600 * 1000);
 
   const getTimeRemaining = () => {
     const dateNow = Date.now();
-    const timeRemaining = deadline - dateNow;
+    const timeRemaining = deadlineCorrectly - dateNow;
     const days = Math.floor(timeRemaining / 1000 / 60 / 60 / 24);
     const hours = Math.floor(timeRemaining / 1000 / 60 / 60 % 24);
     const minutes = Math.floor(timeRemaining / 1000 / 60 % 60);
@@ -35,6 +39,12 @@ const timer = () => {
     timerUnitsMinutes.textContent = parseMinutes(+timer.minutes);
 
     const timerId = setTimeout(startTimer, 30000);
+
+    if (timer.days === 0) {
+      heroTimer.style.backgroundColor = 'green';
+    } else {
+      heroTimer.style.backgroundColor = 'red';
+    }
 
     if (timer.timeRemaining < 0) {
       heroText.remove();
