@@ -1,19 +1,16 @@
-import {
-  heroText,
-  heroTimer,
-  timerCountDays,
-  timerUnitsDays,
-  timerCountHours,
-  timerUnitsHours,
-  timerCountMinutes,
-  timerUnitsMinutes,
-} from './setElements.js';
-
+import createTimer from './createElements.js';
+import setElements from './setElements.js';
 import {parseDays, parseHours, parseMinutes} from './parse.js';
 
-const timer = () => {
+const timer = timerBody => {
+  // Создаем тело таймера
+  createTimer(timerBody);
+
+  // Получаем элементы таймера
+  const elements = setElements(timerBody);
+
   // Время окончания акции по локальному времени
-  const deadline = new Date(heroTimer.dataset.timerDeadline).getTime();
+  const deadline = new Date(timerBody.dataset.timerDeadline).getTime();
   // Корректируем время окончания акции UTC+3
   const deadlineCorrectly = deadline +
     (new Date().getTimezoneOffset() * 60 * 1000) + (3 * 3600 * 1000);
@@ -31,24 +28,24 @@ const timer = () => {
   const startTimer = () => {
     const timer = getTimeRemaining();
 
-    timerCountDays.textContent = timer.days;
-    timerUnitsDays.textContent = parseDays(+timer.days);
-    timerCountHours.textContent = timer.hours;
-    timerUnitsHours.textContent = parseHours(+timer.hours);
-    timerCountMinutes.textContent = timer.minutes;
-    timerUnitsMinutes.textContent = parseMinutes(+timer.minutes);
+    elements.timerCountDays.textContent = timer.days;
+    elements.timerUnitsDays.textContent = parseDays(+timer.days);
+    elements.timerCountHours.textContent = timer.hours;
+    elements.timerUnitsHours.textContent = parseHours(+timer.hours);
+    elements.timerCountMinutes.textContent = timer.minutes;
+    elements.timerUnitsMinutes.textContent = parseMinutes(+timer.minutes);
 
     const timerId = setTimeout(startTimer, 30000);
 
     if (timer.days === 0) {
-      heroTimer.style.backgroundColor = 'green';
+      timerBody.style.backgroundColor = 'green';
     } else {
-      heroTimer.style.backgroundColor = 'red';
+      timerBody.style.backgroundColor = 'red';
     }
 
     if (timer.timeRemaining < 0) {
-      heroText.remove();
-      heroTimer.remove();
+      elements.heroText.remove();
+      timerBody.remove();
       clearTimeout(timerId);
     }
   };
