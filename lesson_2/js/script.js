@@ -1,12 +1,14 @@
-'use strict';
+import debounce from './debounce.js';
 
 const p = document.createElement('p');
 const input = document.createElement('input');
 
 document.body.append(input, p);
 
-input.addEventListener('change', () => {
-  setTimeout(() => {
-    p.textContent = input.value;
-  }, 300);
-});
+const updateParagraf = () => {
+  p.textContent = input.value;
+};
+
+const debounceUpdateParagraf = debounce(updateParagraf, 1000);
+
+input.addEventListener('keyup', debounceUpdateParagraf);
